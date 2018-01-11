@@ -2,6 +2,13 @@
 
 HMR plugin for dva without babel inspired by [babel-plugin-dva-hmr](https://github.com/dvajs/babel-plugin-dva-hmr) and [react-hot-loader](https://github.com/gaearon/react-hot-loader).
 
+## Install
+
+``` sh
+$ npm install dva-hot
+$ npm install redbox-react --save-dev
+```
+
 ## Usage
 
 **Patch App**
