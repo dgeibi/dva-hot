@@ -1,22 +1,51 @@
 {
   "name": "dva-hot",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "HMR plugin for dva without babel",
   "main": "lib/index.js",
   "module": "lib/index.m.js",
+  "typings": "./index.d.ts",
   "scripts": {
     "build": "microbundle --format es --format cjs",
-    "dev": "microbundle watch --format es --format cjs"
+    "dev": "microbundle watch --format es --format cjs",
+    "precommit": "lint-staged",
+    "format": "prettier --write \"src/*.js\"",
+    "lint": "eslint src"
   },
   "author": "dgeibi",
   "license": "ISC",
   "devDependencies": {
-    "microbundle": "^0.2.4"
+    "@easyops/git-exec-and-restage": "^1.0.4",
+    "@types/history": "^4.6.2",
+    "@types/react": "^16.0.34",
+    "@types/redux": "^3.6.0",
+    "@types/webpack-env": "^1.13.3",
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.15.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-dgeibi": "^4.0.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.8.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^6.0.0",
+    "microbundle": "^0.2.4",
+    "prettier": "^1.10.2"
   },
   "directories": {
     "lib": "lib"
   },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "printWidth": 90
+  },
   "dependencies": {},
+  "files": [
+    "lib/",
+    "dva.d.ts",
+    "index.d.ts"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dgeibi/dva-hot.git"
@@ -27,6 +56,12 @@
   ],
   "bugs": {
     "url": "https://github.com/dgeibi/dva-hot/issues"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint",
+      "git-exec-and-restage prettier --write --"
+    ]
   },
   "homepage": "https://github.com/dgeibi/dva-hot#readme"
 }
