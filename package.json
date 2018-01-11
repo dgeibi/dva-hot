@@ -1,0 +1,32 @@
+{
+  "name": "dva-hot",
+  "version": "0.0.1",
+  "description": "HMR plugin for dva without babel",
+  "main": "lib/index.js",
+  "module": "lib/index.m.js",
+  "scripts": {
+    "build": "microbundle --format es --format cjs",
+    "dev": "microbundle watch --format es --format cjs"
+  },
+  "author": "dgeibi",
+  "license": "ISC",
+  "devDependencies": {
+    "microbundle": "^0.2.4"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dgeibi/dva-hot.git"
+  },
+  "keywords": [
+    "dva",
+    "hmr"
+  ],
+  "bugs": {
+    "url": "https://github.com/dgeibi/dva-hot/issues"
+  },
+  "homepage": "https://github.com/dgeibi/dva-hot#readme"
+}
