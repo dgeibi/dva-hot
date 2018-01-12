@@ -13,7 +13,6 @@ test('detect dvaInstance', () => {
     hot.patch({
       start: jest.fn(),
       model: jest.fn(),
-      unmodel: jest.fn(),
       router: jest.fn(),
       use: jest.fn(),
     })

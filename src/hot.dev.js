@@ -121,8 +121,7 @@ function isDvaInstance(inst) {
     isFunction(inst.start) &&
     isFunction(inst.model) &&
     isFunction(inst.router) &&
-    isFunction(inst.use) &&
-    isFunction(inst.unmodel)
+    isFunction(inst.use)
   )
 }
 
