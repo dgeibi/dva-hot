@@ -50,3 +50,18 @@ test('disable hot if pass nothing to app.start', () => {
   expect(oldStart).not.toEqual(app.start)
   expect(oldStart).toBeCalled()
 })
+
+test('patched app.start support HTMLElement', () => {
+  const oldStart = jest.fn()
+  const app = {
+    start: oldStart,
+    model: jest.fn(),
+    unmodel: jest.fn(),
+    router: jest.fn(),
+    use: jest.fn(),
+  }
+
+  hot.patch(app).start(document.body)
+  expect(app.use).toBeCalled()
+  expect(oldStart).toBeCalled()
+})
