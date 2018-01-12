@@ -3,23 +3,26 @@
   "version": "0.0.2",
   "description": "HMR plugin for dva without babel",
   "main": "lib/index.js",
-  "module": "lib/index.m.js",
   "typings": "./index.d.ts",
   "scripts": {
-    "build": "microbundle --format es --format cjs",
-    "dev": "microbundle watch --format es --format cjs",
+    "build": "rm -rf lib && babel src --out-dir lib",
     "precommit": "lint-staged",
-    "format": "prettier --write \"src/*.js\"",
-    "lint": "eslint src"
+    "format": "prettier --write \"**/*.js\"",
+    "test": "jest",
+    "lint": "eslint ."
   },
   "author": "dgeibi",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.37",
+    "@babel/core": "^7.0.0-beta.37",
+    "@babel/preset-env": "^7.0.0-beta.37",
     "@easyops/git-exec-and-restage": "^1.0.4",
     "@types/history": "^4.6.2",
     "@types/react": "^16.0.34",
     "@types/redux": "^3.6.0",
     "@types/webpack-env": "^1.13.3",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^8.2.1",
     "eslint": "^4.15.0",
     "eslint-config-airbnb-base": "^12.1.0",
@@ -27,9 +30,12 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "^2.8.0",
     "husky": "^0.14.3",
+    "jest": "^22.0.6",
     "lint-staged": "^6.0.0",
-    "microbundle": "^0.2.4",
-    "prettier": "^1.10.2"
+    "prettier": "^1.10.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "redbox-react": "^1.5.0"
   },
   "directories": {
     "lib": "lib"
@@ -41,6 +47,11 @@
     "printWidth": 90
   },
   "dependencies": {},
+  "peerDependencies": {
+    "react": "15.x || 16.x",
+    "react-dom": "15.x || 16.x",
+    "redbox-react": "1.x"
+  },
   "files": [
     "lib/",
     "dva.d.ts",
