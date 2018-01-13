@@ -1,13 +1,35 @@
-import hot from '../src/hot.dev'
+let hot
+
+beforeEach(() => {
+  jest.resetModules()
+  hot = require('../src/hot.dev').default
+})
+
+test('throws if patch more than one time', () => {
+  hot.patch({
+    start: jest.fn(),
+    model: jest.fn(),
+    router: jest.fn(),
+    use: jest.fn(),
+  })
+  expect(() => {
+    hot.patch({
+      start: jest.fn(),
+      model: jest.fn(),
+      router: jest.fn(),
+      use: jest.fn(),
+    })
+  }).toConsoleError()
+})
 
 test('detect dvaInstance', () => {
   expect(() => {
     hot.patch({})
-  }).toThrow()
+  }).toConsoleError()
 
   expect(() => {
     hot.patch({ start: 'any' })
-  }).toThrow()
+  }).toConsoleError()
 
   expect(() => {
     hot.patch({
@@ -16,7 +38,7 @@ test('detect dvaInstance', () => {
       router: jest.fn(),
       use: jest.fn(),
     })
-  }).not.toThrow()
+  }).not.toConsoleError()
 })
 
 test('patch start works', () => {
@@ -24,7 +46,6 @@ test('patch start works', () => {
   const app = {
     start: oldStart,
     model: jest.fn(),
-    unmodel: jest.fn(),
     router: jest.fn(),
     use: jest.fn(),
   }

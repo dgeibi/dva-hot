@@ -57,8 +57,13 @@ function patchAppRouter(inst) {
 
 export default {
   patch(inst, container) {
+    if (app) {
+      console.error("[hot.patch] You have been patch app, don't patch app twice")
+      return inst
+    }
     if (!isDvaInstance(inst)) {
-      throw Error('[hot.patch] app should be a `dva` instance')
+      console.error('[hot.patch] app should be a `dva` instance')
+      return inst
     }
     app = inst
     root = normalizeContainer(container) || root

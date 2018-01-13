@@ -32,6 +32,8 @@
     "eslint-plugin-import": "^2.8.0",
     "husky": "^0.14.3",
     "jest": "^22.0.6",
+    "jest-plugin-console-matchers": "^2.6.0",
+    "jest-plugins": "^2.6.0",
     "lint-staged": "^6.0.0",
     "prettier": "^1.10.2",
     "react": "^16.2.0",
@@ -77,5 +79,8 @@
       "git-exec-and-restage prettier --write --"
     ]
   },
-  "homepage": "https://github.com/dgeibi/dva-hot#readme"
+  "homepage": "https://github.com/dgeibi/dva-hot#readme",
+  "jest": {
+    "setupTestFrameworkScriptFile": "./jest-plugins.js"
+  }
 }
