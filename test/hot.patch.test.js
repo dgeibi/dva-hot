@@ -5,13 +5,16 @@ beforeEach(() => {
   hot = require('../src/hot.dev').default
 })
 
-test('throws if patch more than one time', () => {
-  hot.patch({
-    start: jest.fn(),
-    model: jest.fn(),
-    router: jest.fn(),
-    use: jest.fn(),
-  })
+test('log error if patch more than one time', () => {
+  expect(() => {
+    hot.patch({
+      start: jest.fn(),
+      model: jest.fn(),
+      router: jest.fn(),
+      use: jest.fn(),
+    })
+  }).not.toConsoleError()
+
   expect(() => {
     hot.patch({
       start: jest.fn(),
@@ -41,22 +44,47 @@ test('detect dvaInstance', () => {
   }).not.toConsoleError()
 })
 
-test('patch start works', () => {
-  const oldStart = jest.fn()
-  const app = {
-    start: oldStart,
+test('patch works', () => {
+  const old = {
+    start: jest.fn(),
     model: jest.fn(),
     router: jest.fn(),
     use: jest.fn(),
   }
 
-  hot.patch(app).start('body')
+  const app = {
+    ...old,
+  }
+
+  expect(() => {
+    hot.patch(app)
+  }).not.toConsoleError()
+  expect(old.start).not.toEqual(app.start)
+  expect(old.model).not.toEqual(app.model)
+  expect(old.router).not.toEqual(app.router)
+  app.start('body')
   expect(app.use).toBeCalled()
-  expect(oldStart).not.toEqual(app.start)
-  expect(oldStart).toBeCalled()
+  expect(old.start).toBeCalled()
+  app.model(null)
+  expect(old.model).toBeCalled()
+  app.router(null)
+  expect(old.router).toBeCalled()
 })
 
-test('disable hot if pass nothing to app.start', () => {
+test('log error if pass container not exists', () => {
+  const app = {
+    start: jest.fn(),
+    model: jest.fn(),
+    router: jest.fn(),
+    use: jest.fn(),
+  }
+
+  expect(() => {
+    hot.patch(app, '#root')
+  }).toConsoleError()
+})
+
+test('not call app.use if pass nothing to app.start', () => {
   const oldStart = jest.fn()
   const app = {
     start: oldStart,
@@ -66,10 +94,28 @@ test('disable hot if pass nothing to app.start', () => {
     use: jest.fn(),
   }
 
-  hot.patch(app).start(null)
+  hot.patch(app).start()
   expect(app.use).not.toBeCalled()
   expect(oldStart).not.toEqual(app.start)
   expect(oldStart).toBeCalled()
+})
+
+test('log error if container not exists', () => {
+  const app = {
+    start: jest.fn(),
+    model: jest.fn(),
+    unmodel: jest.fn(),
+    router: jest.fn(),
+    use: jest.fn(),
+  }
+  hot.patch(app)
+  expect(() => {
+    app.start()
+  }).not.toConsoleError()
+
+  expect(() => {
+    app.start('#root')
+  }).toConsoleError()
 })
 
 test('patched app.start support HTMLElement', () => {

@@ -5,4 +5,5 @@ export default {
   patch: passthrough,
   model: makethrough,
   router: makethrough,
+  setContainer: passthrough,
 }

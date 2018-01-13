@@ -14,48 +14,7 @@ let hmrRender = router => {
   render(createElement(app.start()), root)
 }
 
-function shouldReplaceModule(sourceModule) {
-  return app && root && sourceModule.hot.data && sourceModule.hot.data.enabled
-}
-
-function patchAppStart(inst) {
-  const oldStart = inst.start
-  inst.start = container => {
-    container = normalizeContainer(container)
-    if (container) {
-      root = container
-      app.use({
-        onHmr(r) {
-          hmrRender = r
-        },
-      })
-    }
-    return oldStart.call(inst, container)
-  }
-}
-
-function patchAppModel(inst) {
-  const oldMethod = inst.model
-  inst.model = m => {
-    if (isDvaModel(m)) {
-      mountedModels.add(m)
-    }
-    return oldMethod.call(inst, m)
-  }
-}
-
-function patchAppRouter(inst) {
-  const oldMethod = inst.router
-
-  inst.router = r => {
-    if (isFunction(r)) {
-      currentRouter = r
-    }
-    return oldMethod.call(inst, r)
-  }
-}
-
-export default {
+const hot = {
   patch(inst, container) {
     if (app) {
       console.error("[hot.patch] You have been patch app, don't patch app twice")
@@ -66,12 +25,24 @@ export default {
       return inst
     }
     app = inst
-    root = normalizeContainer(container) || root
+    if (container !== undefined) {
+      hot.setContainer(container)
+    }
     patchAppStart(inst)
     patchAppModel(inst)
     patchAppRouter(inst)
     console.log('[dva-hot] enabled.')
     return inst
+  },
+
+  setContainer(container) {
+    container = normalizeContainer(container)
+    if (!container) {
+      console.error('container should be selector or Element')
+    } else {
+      root = container
+    }
+    return container
   },
 
   model(sourceModule) {
@@ -129,6 +100,8 @@ export default {
     return passthrough
   },
 }
+
+export default hot
 
 function isHTMLElement(node) {
   return typeof node === 'object' && node !== null && node.nodeType && node.nodeName
@@ -190,4 +163,46 @@ function normalizeContainer(container) {
     return container
   }
   return null
+}
+
+function shouldReplaceModule(sourceModule) {
+  return app && root && sourceModule.hot.data && sourceModule.hot.data.enabled
+}
+
+function patchAppStart(inst) {
+  const oldStart = inst.start
+  inst.start = container => {
+    if (container !== undefined) {
+      container = hot.setContainer(container)
+    }
+    if (container) {
+      app.use({
+        onHmr(r) {
+          hmrRender = r
+        },
+      })
+    }
+    return oldStart.call(inst, container)
+  }
+}
+
+function patchAppModel(inst) {
+  const oldMethod = inst.model
+  inst.model = m => {
+    if (isDvaModel(m)) {
+      mountedModels.add(m)
+    }
+    return oldMethod.call(inst, m)
+  }
+}
+
+function patchAppRouter(inst) {
+  const oldMethod = inst.router
+
+  inst.router = r => {
+    if (isFunction(r)) {
+      currentRouter = r
+    }
+    return oldMethod.call(inst, r)
+  }
 }
