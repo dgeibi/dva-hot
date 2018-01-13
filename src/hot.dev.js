@@ -1,37 +1,34 @@
+import { render } from 'react-dom'
+import { createElement } from 'react'
+import RedBox from 'redbox-react'
+
 /* eslint-disable no-param-reassign */
+
 let app
-let hmrRender
 let root
 let currentRouter = null
 const mountedModels = new WeakSet()
 
+let hmrRender = router => {
+  app.router(router)
+  render(createElement(app.start()), root)
+}
+
 function shouldReplaceModule(sourceModule) {
-  return (
-    app && hmrRender && root && sourceModule.hot.data && sourceModule.hot.data.enabled
-  )
+  return app && root && sourceModule.hot.data && sourceModule.hot.data.enabled
 }
 
 function patchAppStart(inst) {
   const oldStart = inst.start
   inst.start = container => {
-    if (isString(container)) {
-      container = document.querySelector(container)
-    }
-
-    if (isHTMLElement(container)) {
-      app = inst
+    container = normalizeContainer(container)
+    if (container) {
       root = container
       app.use({
-        onHmr(render) {
-          console.log('[dva-hot] enabled.')
-          hmrRender = render
+        onHmr(r) {
+          hmrRender = r
         },
       })
-    } else {
-      app = undefined
-      root = undefined
-      hmrRender = undefined
-      console.log('[dva-hot] disabled.')
     }
     return oldStart.call(inst, container)
   }
@@ -49,6 +46,7 @@ function patchAppModel(inst) {
 
 function patchAppRouter(inst) {
   const oldMethod = inst.router
+
   inst.router = r => {
     if (isFunction(r)) {
       currentRouter = r
@@ -58,13 +56,16 @@ function patchAppRouter(inst) {
 }
 
 export default {
-  patch(inst) {
+  patch(inst, container) {
     if (!isDvaInstance(inst)) {
       throw Error('[hot.patch] app should be a `dva` instance')
     }
+    app = inst
+    root = normalizeContainer(container) || root
     patchAppStart(inst)
     patchAppModel(inst)
     patchAppRouter(inst)
+    console.log('[dva-hot] enabled.')
     return inst
   },
 
@@ -163,10 +164,7 @@ function isNodeModule(x) {
 }
 
 const renderException = error => {
-  const { render } = require('react-dom')
-  const { createElement } = require('react')
-  const RedBox = require('redbox-react')
-  render(createElement(RedBox || RedBox.default, { error }), root)
+  render(createElement(RedBox, { error }), root)
 }
 
 function replaceRouter(router) {
@@ -177,4 +175,14 @@ function replaceRouter(router) {
     console.error('error', error)
     renderException(error)
   }
+}
+
+function normalizeContainer(container) {
+  if (isString(container)) {
+    container = document.querySelector(container)
+  }
+  if (isHTMLElement(container)) {
+    return container
+  }
+  return null
 }
