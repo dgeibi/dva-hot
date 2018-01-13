@@ -1,9 +1,60 @@
+/* eslint-disable no-param-reassign */
 let app
 let hmrRender
 let root
+let currentRouter = null
+const mountedModels = new WeakSet()
 
-function shouldReload() {
-  return app && hmrRender && root
+function shouldReplaceModule(sourceModule) {
+  return (
+    app && hmrRender && root && sourceModule.hot.data && sourceModule.hot.data.enabled
+  )
+}
+
+function patchAppStart(inst) {
+  const oldStart = inst.start
+  inst.start = container => {
+    if (isString(container)) {
+      container = document.querySelector(container)
+    }
+
+    if (isHTMLElement(container)) {
+      app = inst
+      root = container
+      app.use({
+        onHmr(render) {
+          console.log('[dva-hot] enabled.')
+          hmrRender = render
+        },
+      })
+    } else {
+      app = undefined
+      root = undefined
+      hmrRender = undefined
+      console.log('[dva-hot] disabled.')
+    }
+    return oldStart.call(inst, container)
+  }
+}
+
+function patchAppModel(inst) {
+  const oldMethod = inst.model
+  inst.model = m => {
+    if (isDvaModel(m)) {
+      mountedModels.add(m)
+    }
+    return oldMethod.call(inst, m)
+  }
+}
+
+function patchAppRouter(inst) {
+  const oldMethod = inst.router
+  inst.router = r => {
+    if (isFunction(r)) {
+      currentRouter = r
+    }
+    return oldMethod.call(inst, r)
+  }
 }
 
 export default {
@@ -11,31 +62,9 @@ export default {
     if (!isDvaInstance(inst)) {
       throw Error('[hot.patch] app should be a `dva` instance')
     }
-    const oldStart = inst.start
-    // eslint-disable-next-line
-    inst.start = container => {
-      if (isString(container)) {
-        // eslint-disable-next-line
-        container = document.querySelector(container)
-      }
-
-      if (isHTMLElement(container)) {
-        app = inst
-        root = container
-        app.use({
-          onHmr(render) {
-            console.log('[dva-hot] enabled.')
-            hmrRender = render
-          },
-        })
-      } else {
-        app = undefined
-        root = undefined
-        hmrRender = undefined
-        console.warn('[dva-hot] disabled.')
-      }
-      return oldStart.call(inst, container)
-    }
+    patchAppStart(inst)
+    patchAppModel(inst)
+    patchAppRouter(inst)
     return inst
   },
 
@@ -48,16 +77,18 @@ export default {
         if (!isDvaModel(model)) {
           throw Error('[hot.model] model shoule be a obj and has `namespace` prop')
         }
-        let { namespace } = model
         sourceModule.hot.accept()
-        sourceModule.hot.dispose(() => {
-          if (namespace) {
-            app.unmodel(namespace)
-            namespace = undefined
+        sourceModule.hot.dispose(data => {
+          if (mountedModels.has(model)) {
+            data.namespace = model.namespace
+            mountedModels.delete(model)
+            model = undefined
+            data.enabled = true
           }
         })
-        if (shouldReload()) {
+        if (shouldReplaceModule(sourceModule)) {
           try {
+            app.unmodel(sourceModule.hot.data.namespace)
             app.model(model)
           } catch (e) {
             console.error('error', e)
@@ -79,22 +110,12 @@ export default {
           throw Error('[hot.router] router should be a function')
         }
         sourceModule.hot.accept()
-        if (shouldReload()) {
-          const renderException = error => {
-            const { render } = require('react-dom')
-            const { createElement } = require('react')
-            const RedBox = require('redbox-react')
-            render(createElement(RedBox || RedBox.default, { error }), root)
-          }
-          const newRender = x => {
-            try {
-              hmrRender(x)
-            } catch (error) {
-              console.error('error', error)
-              renderException(error)
-            }
-          }
-          newRender(router)
+        sourceModule.hot.dispose(data => {
+          data.enabled = currentRouter === router
+          router = undefined
+        })
+        if (shouldReplaceModule(sourceModule)) {
+          replaceRouter(router)
         }
         return router
       }
@@ -139,4 +160,21 @@ function passthrough(x) {
 
 function isNodeModule(x) {
   return isObject(x) && 'id' in x
+}
+
+const renderException = error => {
+  const { render } = require('react-dom')
+  const { createElement } = require('react')
+  const RedBox = require('redbox-react')
+  render(createElement(RedBox || RedBox.default, { error }), root)
+}
+
+function replaceRouter(router) {
+  currentRouter = router
+  try {
+    hmrRender(router)
+  } catch (error) {
+    console.error('error', error)
+    renderException(error)
+  }
 }

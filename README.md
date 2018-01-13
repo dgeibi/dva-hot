@@ -21,11 +21,13 @@ import dva from 'dva'
 
 const app = dva()
 
+hot.patch(app) // you must patch `app` before calling app.{model,router,start}
+
 app.model(require('./models/a').default)
 app.model(require('./models/b').default)
 app.router(require('./router').default)
 
-hot.patch(app).start('#root')
+app.start('#root')
 ```
 
 **Self-accepted Model**

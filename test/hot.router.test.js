@@ -21,6 +21,7 @@ test('detect router', () => {
     id: 11,
     hot: {
       accept: jest.fn(),
+      dispose: jest.fn(),
     },
   }
   const wrapRouter = hot.router(sourceModule)
@@ -33,6 +34,7 @@ test('accept hmr after passing router', () => {
     id: 11,
     hot: {
       accept: jest.fn(),
+      dispose: jest.fn(),
     },
   }
   const wrapRouter = hot.router(sourceModule)
