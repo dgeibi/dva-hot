@@ -30,6 +30,27 @@ app.router(require('./router').default)
 app.start('#root')
 ```
 
+After dva's [commit 77a6fa](https://github.com/dvajs/dva/commit/77a6fa13bcbd899baad245a45fc98fbfd2623cd5), the following usage should work:
+
+``` js
+import hot from 'dva-hot'
+import dva from 'dva'
+import { createElement } from 'react'
+import { render } from 'react-dom'
+
+const app = dva()
+
+hot.patch(app) // you can pass container to hot.patch like `hot.patch(app, container)`
+
+app.model(require('./models/a').default)
+app.model(require('./models/b').default)
+app.router(require('./router').default)
+
+const container = document.querySelector('#root')
+// experimental: pass container for HMR
+render(createElement(app.start()), hot.setContainer(container))
+```
+
 **Self-accepted Model**
 
 ``` js
