@@ -3,7 +3,7 @@ import hot from 'dva-hot'
 
 const model = hot.model(module)({
   namespace: 'one',
-  state: [${Math.random()}],
+  state: ${Math.random()},
 })
 
 export default model
