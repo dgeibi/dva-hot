@@ -1,14 +1,22 @@
 {
   "extends": [
-    "dgeibi",
+    "dgeibi/react",
     "prettier"
   ],
   "rules": {
     "import/no-extraneous-dependencies": "off",
     "global-require": "off",
-    "no-console": "off"
+    "no-console": "off",
+    "prefer-destructuring": "off"
   },
   "env":{
     "browser": true
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./example/webpack.config.js"
+      }
+    }
   }
 }

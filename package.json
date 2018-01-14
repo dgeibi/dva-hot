@@ -9,7 +9,8 @@
     "precommit": "lint-staged",
     "format": "prettier --write \"**/*.js\"",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "example": "webpack-dev-server --config ./example/webpack.config.js"
   },
   "author": "dgeibi",
   "license": "ISC",
@@ -18,17 +19,23 @@
     "@babel/core": "^7.0.0-beta.37",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.37",
     "@babel/preset-env": "^7.0.0-beta.37",
+    "@babel/preset-react": "^7.0.0-beta.37",
     "@easyops/git-exec-and-restage": "^1.0.4",
     "@types/history": "^4.6.2",
     "@types/react": "^16.0.34",
     "@types/webpack-env": "^1.13.3",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^8.2.1",
+    "babel-loader": "^8.0.0-beta.0",
+    "dva": "^2.1.0",
     "eslint": "^4.15.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-config-dgeibi": "^4.0.0",
     "eslint-config-prettier": "^2.9.0",
+    "eslint-import-resolver-webpack": "^0.8.4",
     "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-react": "^7.5.1",
+    "fs-extra": "^5.0.0",
     "husky": "^0.14.3",
     "jest": "^22.0.6",
     "jest-plugin-console-matchers": "^2.6.0",
@@ -37,7 +44,9 @@
     "prettier": "^1.10.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "redbox-react": "^1.5.0"
+    "redbox-react": "^1.5.0",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.10.1"
   },
   "directories": {
     "lib": "lib"
