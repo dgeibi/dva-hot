@@ -51,17 +51,6 @@ const container = document.querySelector('#root')
 render(createElement(app.start()), hot.setContainer(container))
 ```
 
-**Self-accepted Model**
-
-``` js
-import hot from 'dva-hot'
-
-export default hot.model(module)({
-  namespace: 'a-dva-model'
-  state: [],
-})
-```
-
 **Self-accepted Router**
 
 ``` js
@@ -78,6 +67,19 @@ function RouterConfig({ history }) {
 }
 
 export default hot.router(module)(RouterConfig)
+```
+
+**Self-accepted Model**
+
+**WARNING: hot model replacement may cause loss of state!**
+
+``` js
+import hot from 'dva-hot'
+
+export default hot.model(module)({
+  namespace: 'a-dva-model'
+  state: [],
+})
 ```
 
 ## LICENSE
