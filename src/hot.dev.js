@@ -69,6 +69,7 @@ const hot = {
             app.model(model)
           } catch (e) {
             console.error('error', e)
+            renderException(e)
           }
         }
         return model
@@ -141,7 +142,7 @@ function isNodeModule(x) {
   return isObject(x) && 'id' in x
 }
 
-const renderException = error => {
+function renderException(error) {
   render(createElement(RedBox, { error }), root)
 }
 
