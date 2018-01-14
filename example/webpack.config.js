@@ -4,6 +4,7 @@ const fs = require('fs-extra')
 
 const root = __dirname
 const dist = path.join(root, 'public')
+const dvaHotDir = path.join(__dirname, '../src')
 
 module.exports = {
   devtool: 'cheap-module-source-map',
@@ -14,24 +15,20 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'dva-hot': path.join(__dirname, '../src'),
+      'dva-hot': dvaHotDir,
     },
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'],
-              plugins: ['@babel/plugin-transform-runtime'],
-              babelrc: false,
-            },
-          },
-        ],
-        include: [root],
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-react'],
+          plugins: ['@babel/plugin-transform-runtime'],
+          babelrc: false,
+        },
+        include: [root, dvaHotDir],
       },
     ],
   },
