@@ -51,6 +51,11 @@ module.exports = {
           path.join(root, 'models/one.js'),
           require('./resources/models/one')()
         )
+
+        fs.writeFileSync(
+          path.join(root, 'models/two.js'),
+          require('./resources/models/two')()
+        )
       }
       writeFiles()
       app.get('/', (req, res, next) => {

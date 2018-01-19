@@ -4,7 +4,7 @@ import { connect } from 'dva'
 class One extends Component {
   render() {
     const { one } = this.props
-    return <div>model value: {String(one)}</div>
+    return <div>[one] model value: {String(one)}</div>
   }
 }
 
