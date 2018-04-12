@@ -1,3 +1,5 @@
+import { createElement } from 'react'
+import { render } from 'react-dom'
 import dva from 'dva'
 import hot from 'dva-hot'
 import router from './router'
@@ -9,4 +11,5 @@ hot.patch(app)
 app.model(one)
 app.model(two)
 app.router(router)
-app.start('#root')
+
+render(createElement(app.start()), hot.setContainer('#root'))

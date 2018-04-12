@@ -7,6 +7,7 @@ const dist = path.join(root, 'public')
 const dvaHotDir = path.join(__dirname, '../src')
 
 module.exports = {
+  mode: 'development',
   devtool: 'cheap-module-source-map',
   entry: path.join(root, './index.js'),
   output: {
@@ -32,7 +33,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [new webpack.HotModuleReplacementPlugin(), new webpack.NamedModulesPlugin()],
+  plugins: [new webpack.HotModuleReplacementPlugin()],
   devServer: {
     contentBase: dist,
     hot: true,
