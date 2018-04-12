@@ -8,7 +8,6 @@ HMR plugin for dva without babel inspired by [babel-plugin-dva-hmr](https://gith
 
 ``` sh
 $ npm install dva-hot
-$ npm install redbox-react --save-dev
 ```
 
 ## Usage
@@ -30,7 +29,7 @@ app.router(require('./router').default)
 app.start('#root')
 ```
 
-After dva's [commit 77a6fa](https://github.com/dvajs/dva/commit/77a6fa13bcbd899baad245a45fc98fbfd2623cd5), the following usage should work:
+After `dva@2.2.2`, the usage below should work:
 
 ``` js
 import hot from 'dva-hot'
@@ -46,9 +45,10 @@ app.model(require('./models/a').default)
 app.model(require('./models/b').default)
 app.router(require('./router').default)
 
-const container = document.querySelector('#root')
-// experimental: pass container for HMR
-render(createElement(app.start()), hot.setContainer(container))
+// After dva@2.2.2: pass container for HMR
+render(createElement(app.start()), hot.setContainer('#root'))
+// or
+// render(createElement(app.start()), hot.setContainer(document.querySelector('#root')))
 ```
 
 **Self-accepted Router**
@@ -71,14 +71,13 @@ export default hot.router(module)(RouterConfig)
 
 **Self-accepted Model**
 
-**WARNING: hot model replacement may cause loss of state!**
-
 ``` js
 import hot from 'dva-hot'
 
 export default hot.model(module)({
   namespace: 'a-dva-model'
   state: [],
+  // upgrade to dva@2.2.2 if you use models that without `reducers`
 })
 ```
 
