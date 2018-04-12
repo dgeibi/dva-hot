@@ -1,6 +1,6 @@
 {
   "name": "dva-hot",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "HMR plugin for dva without babel",
   "main": "lib/index.js",
   "typings": "./index.d.ts",
