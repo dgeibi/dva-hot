@@ -2,7 +2,7 @@ let hot
 
 beforeEach(() => {
   jest.resetModules()
-  hot = require('../src/hot.dev').default
+  hot = require('../src/hot.dev')
 })
 
 test('log error if patch more than one time', () => {

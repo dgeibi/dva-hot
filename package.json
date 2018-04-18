@@ -1,8 +1,7 @@
 {
   "name": "dva-hot",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "HMR plugin for dva without babel",
-  "main": "lib/index.js",
   "typings": "./index.d.ts",
   "scripts": {
     "build": "rimraf lib && babel src --out-dir lib",
@@ -27,7 +26,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^8.2.2",
     "babel-loader": "^8.0.0-beta.2",
-    "dva": "^2.2.2",
+    "dva": "^2.2.3",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-config-dgeibi": "^4.1.0",
@@ -68,7 +67,7 @@
   },
   "files": [
     "lib/",
-    "dva.d.ts",
+    "index.js",
     "index.d.ts"
   ],
   "repository": {

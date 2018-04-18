@@ -1,6 +1,6 @@
 import { Router, Route, Link } from 'dva/router'
 import React from 'react'
-import hot from 'dva-hot'
+import { router } from 'dva-hot'
 import One from './routes/One'
 import Two from './routes/Two'
 import RandomNum from './component/RandomNum'
@@ -21,4 +21,4 @@ function RouterConfig({ history }) {
   )
 }
 
-export default hot.router(module)(RouterConfig)
+export default router(module)(RouterConfig)

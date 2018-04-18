@@ -1,7 +1,7 @@
 const passthrough = x => x
 const makethrough = () => passthrough
 
-export default {
+module.exports = {
   patch: passthrough,
   model: makethrough,
   router: makethrough,

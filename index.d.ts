@@ -1,4 +1,4 @@
-import { Model, DvaInstance, Router } from './dva'
+import { Model, DvaInstance, Router } from 'dva'
 
 type Container = string | HTMLElement
 type ModelWrapper = (model: Model) => Model
@@ -12,4 +12,4 @@ interface DvaHot {
 }
 
 declare var hot: DvaHot
-export default hot
+export = hot

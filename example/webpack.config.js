@@ -4,7 +4,7 @@ const fs = require('fs-extra')
 
 const root = __dirname
 const dist = path.join(root, 'public')
-const dvaHotDir = path.join(__dirname, '../src')
+const dvaHotDir = path.join(__dirname, '../index.js')
 
 module.exports = {
   mode: 'development',
