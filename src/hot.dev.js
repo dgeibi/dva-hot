@@ -1,11 +1,11 @@
-import { render } from 'react-dom'
-import { createElement } from 'react'
-import RedBox from 'redbox-react'
+const { render } = require('react-dom')
+const { createElement } = require('react')
 
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, no-use-before-define */
 
 let app
 let root
+let handleModelError
 let currentRouter = null
 const mountedModels = new WeakSet()
 
@@ -45,7 +45,11 @@ const hot = {
     return container
   },
 
-  model(sourceModule) {
+  onModelError(fn) {
+    handleModelError = fn
+  },
+
+  model(sourceModule, handleError) {
     if (!isNodeModule(sourceModule)) {
       throw Error('[hot.model] should pass `module` first')
     }
@@ -54,7 +58,7 @@ const hot = {
         if (!isDvaModel(model)) {
           throw Error('[hot.model] model shoule be a obj and has `namespace` prop')
         }
-        sourceModule.hot.accept()
+        sourceModule.hot.accept(handleError || handleModelError)
         sourceModule.hot.dispose(data => {
           if (mountedModels.has(model)) {
             data.namespace = model.namespace
@@ -64,13 +68,8 @@ const hot = {
           }
         })
         if (shouldReplaceModule(sourceModule)) {
-          try {
-            app.unmodel(sourceModule.hot.data.namespace)
-            app.model(model)
-          } catch (e) {
-            console.error('error', e)
-            renderException(e)
-          }
+          app.unmodel(sourceModule.hot.data.namespace)
+          app.model(model)
         }
         return model
       }
@@ -78,7 +77,7 @@ const hot = {
     return passthrough
   },
 
-  router(sourceModule) {
+  router(sourceModule, handleError) {
     if (!isNodeModule(sourceModule)) {
       throw Error('[hot.router] should pass `module` first')
     }
@@ -87,7 +86,7 @@ const hot = {
         if (!isFunction(router)) {
           throw Error('[hot.router] router should be a function')
         }
-        sourceModule.hot.accept()
+        sourceModule.hot.accept(handleError)
         sourceModule.hot.dispose(data => {
           data.enabled = currentRouter === router
           router = undefined
@@ -142,18 +141,9 @@ function isNodeModule(x) {
   return isObject(x) && 'id' in x
 }
 
-function renderException(error) {
-  render(createElement(RedBox, { error }), root)
-}
-
 function replaceRouter(router) {
   currentRouter = router
-  try {
-    hmrRender(router)
-  } catch (error) {
-    console.error('error', error)
-    renderException(error)
-  }
+  hmrRender(router)
 }
 
 function normalizeContainer(container) {
