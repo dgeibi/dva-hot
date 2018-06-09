@@ -1,7 +1,6 @@
 {
   "extends": [
-    "dgeibi/react",
-    "prettier"
+    "dgeibi/react"
   ],
   "rules": {
     "import/no-extraneous-dependencies": "off",
