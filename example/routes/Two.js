@@ -7,9 +7,10 @@ class Two extends Component {
       type: 'two/getRandom',
     })
   }
+
   render() {
     const { two } = this.props
-    return <div>[two] model value: {String(two)}</div>
+    return <div>[two] model value: {String(two.value)}</div>
   }
 }
 

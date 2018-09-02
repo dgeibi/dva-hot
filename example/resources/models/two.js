@@ -3,10 +3,14 @@ import hot from 'dva-hot'
 
 const model = hot.model(module)({
   namespace: 'two',
-  state: 1,
+  state: {
+    value: 1
+  },
   reducers: {
     getRandom() {
-      return 1 + ${Math.random()};
+      return {
+        value: 1 + ${Math.random()}
+      };
     },
   },
 })

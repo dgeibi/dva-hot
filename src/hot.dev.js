@@ -61,15 +61,18 @@ const hot = {
         sourceModule.hot.accept(handleError || handleModelError)
         sourceModule.hot.dispose(data => {
           if (mountedModels.has(model)) {
-            data.namespace = model.namespace
             mountedModels.delete(model)
             model = undefined
             data.enabled = true
           }
         })
         if (shouldReplaceModule(sourceModule)) {
-          app.unmodel(sourceModule.hot.data.namespace)
-          app.model(model)
+          if (app.replaceModel) {
+            app.replaceModel(model)
+          } else {
+            app.unmodel(model.namespace)
+            app.model(model)
+          }
         }
         return model
       }
