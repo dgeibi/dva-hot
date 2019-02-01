@@ -1,3 +1,5 @@
+const { create } = require('dva-core')
+
 let hot
 
 beforeEach(() => {
@@ -131,4 +133,65 @@ test('patched app.start support HTMLElement', () => {
   hot.patch(app).start(document.body)
   expect(app.use).toBeCalled()
   expect(oldStart).toBeCalled()
+})
+
+test('dynamic model', () => {
+  const app = create()
+  app.use = jest.fn()
+  app.router = jest.fn()
+
+  expect(() => {
+    hot.patch(app)
+  }).not.toConsoleError()
+
+  let prevDispose
+  const fakeSourceModule = {
+    id: 11,
+    hot: {
+      data: {},
+      accept: jest.fn(),
+      dispose: fn => {
+        prevDispose = fn
+      },
+    },
+  }
+  const modelWrapper = hot.model(fakeSourceModule)
+  const addModelFactory = x => ({
+    namespace: 'counter',
+    state: 0,
+    reducers: {
+      add(state) {
+        return state + x
+      },
+    },
+  })
+
+  // import counter
+  const counterModel = modelWrapper(addModelFactory(1))
+  app.model(counterModel)
+  app.start('body')
+
+  app._store.dispatch({ type: 'counter/add' })
+  expect(app._store.getState().counter).toEqual(1)
+
+  // alter model 1st
+  fakeSourceModule.hot.data = {}
+  prevDispose(fakeSourceModule.hot.data)
+  modelWrapper(addModelFactory(2))
+  app._store.dispatch({ type: 'counter/add' })
+  expect(app._store.getState().counter).toEqual(3)
+
+  // alter model 2nd
+  fakeSourceModule.hot.data = {}
+  prevDispose(fakeSourceModule.hot.data)
+  modelWrapper(addModelFactory(3))
+  app._store.dispatch({ type: 'counter/add' })
+  expect(app._store.getState().counter).toEqual(6)
+
+  // alter model 3rd
+  fakeSourceModule.hot.data = {}
+  prevDispose(fakeSourceModule.hot.data)
+  modelWrapper(addModelFactory(4))
+  app._store.dispatch({ type: 'counter/add' })
+  expect(app._store.getState().counter).toEqual(10)
 })
