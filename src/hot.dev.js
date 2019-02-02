@@ -176,7 +176,9 @@ function patchAppStart(inst) {
         },
       })
     }
-    return oldStart.call(inst, container)
+    const rootElement = oldStart.call(inst, container)
+    patchAppModel(inst)
+    return rootElement
   }
 }
 
