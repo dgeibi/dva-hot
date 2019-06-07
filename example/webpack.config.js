@@ -27,6 +27,7 @@ module.exports = {
         options: {
           presets: ['@babel/preset-env', '@babel/preset-react'],
           babelrc: false,
+          configFile: false,
         },
         include: [root, dvaHotDir],
       },
